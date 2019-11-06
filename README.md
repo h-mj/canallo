@@ -1,0 +1,3 @@
+# Canallo
+
+Authorization library.

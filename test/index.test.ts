@@ -17,7 +17,7 @@ it("authorizes using synchronous conditions", async () => {
     .allow(A, "see", T)
     .allow(A, "delete", T, (a, t) => a.id === t.id);
 
-  const { can } = canallo;
+  const { can, cannot } = canallo;
 
   const a1 = new A("1");
   const a2 = new A("2");
@@ -26,4 +26,5 @@ it("authorizes using synchronous conditions", async () => {
   expect(await can(a1, "delete", t1)).toBe(true); // ok
   expect(await can(a2, "delete", t1)).toBe(false); // condition not met
   expect(await can(a1, "see", t1)).toBe(true); // ok
+  expect(await cannot(a2, "delete", t1)).toBe(true);
 });

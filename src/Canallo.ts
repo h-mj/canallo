@@ -123,8 +123,7 @@ export class Canallo<R extends AnyRight = never> {
   ) => !(await this.can(actor, action, target));
 
   /**
-   * Similar to `can`, but calls `onNotAuthorized` function if condition is not
-   * met.
+   * Calls `onNotAuthorized` function if condition is not met.
    */
   public authorize = async <
     A extends InferActors<R>,
@@ -135,7 +134,7 @@ export class Canallo<R extends AnyRight = never> {
     action: N,
     target: T
   ) => {
-    if (this.cannot(actor, action, target)) {
+    if (await this.cannot(actor, action, target)) {
       this.onNotAuthorized(actor, action, target);
     }
   };

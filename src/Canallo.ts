@@ -12,7 +12,7 @@ import {
  * Function type that is called if actor is not authorized to perform an action of
  * some target.
  */
-export type OnNotAuthorized = (
+export type UnauthorizedHandler = (
   actor: object,
   action: string,
   target: object
@@ -21,14 +21,9 @@ export type OnNotAuthorized = (
 /**
  * Default not authorized exception callback.
  */
-const defaultOnNotAuthorized = (
-  actor: object,
-  action: string,
-  target: object
-) => {
-  throw new Error(
-    `${actor.constructor.name} is not allowed to ${action} ${target.constructor.name}.`
-  );
+// prettier-ignore
+const unauthorizedHandler = (actor: object, action: string, target: object) => {
+  throw new Error(`${actor.constructor.name} is not allowed to ${action} ${target.constructor.name}.`);
 };
 
 /**
@@ -48,16 +43,17 @@ export class Canallo<R extends AnyRight = never> {
    * Function that is called when action is not authorized within `authorize`
    * function.
    */
-  private onNotAuthorized: OnNotAuthorized;
+  private onUnauthorized: UnauthorizedHandler;
 
   /**
-   * Creates a new instance of `Canallo` with specified rights array.
+   * Creates a new instance of `Canallo` with specified optional unauthorized
+   * handler. Default handler is used if `onUnauthorized` is not provided.
    */
   public constructor(
-    onNotAuthorized: OnNotAuthorized = defaultOnNotAuthorized
+    onUnauthorized: UnauthorizedHandler = unauthorizedHandler
   ) {
     this.rights = [];
-    this.onNotAuthorized = onNotAuthorized;
+    this.onUnauthorized = onUnauthorized;
   }
 
   /**
@@ -135,7 +131,7 @@ export class Canallo<R extends AnyRight = never> {
     target: T
   ) => {
     if (await this.cannot(actor, action, target)) {
-      this.onNotAuthorized(actor, action, target);
+      this.onUnauthorized(actor, action, target);
     }
   };
 }

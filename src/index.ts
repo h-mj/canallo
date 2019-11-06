@@ -1,4 +1,4 @@
-export { Canallo, OnNotAuthorized } from "./Canallo";
+export { Canallo, UnauthorizedHandler } from "./Canallo";
 export {
   AnyRight,
   Class,

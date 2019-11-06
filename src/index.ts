@@ -107,14 +107,11 @@ export class Canallo {
       if (
         actor instanceof right.actorClass &&
         action === right.action &&
-        target instanceof right.targetClass
+        target instanceof right.targetClass &&
+        (right.condition === undefined ||
+          (await right.condition(actor, target)))
       ) {
-        if (
-          right.condition === undefined ||
-          (await right.condition(actor, target))
-        ) {
-          return true;
-        }
+        return true;
       }
     }
 

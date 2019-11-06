@@ -1,11 +1,15 @@
 import { Canallo } from "../src";
 
-it("works", async () => {
+it("authorizes using synchronous conditions", async () => {
   class A {
+    public name?: "a";
+
     public constructor(public id: string) {}
   }
 
   class T {
+    public name?: "t";
+
     public constructor(public id: string) {}
   }
 
@@ -21,5 +25,5 @@ it("works", async () => {
 
   expect(await can(a1, "delete", t1)).toBe(true); // ok
   expect(await can(a2, "delete", t1)).toBe(false); // condition not met
-  expect(await can(a1, "see", a1)).toBe(false); // right `A` see `A` does not exist
+  expect(await can(a1, "see", t1)).toBe(true); // ok
 });

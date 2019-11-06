@@ -42,7 +42,7 @@ export class Canallo<R extends AnyRight = never> {
   /**
    * Array of defined rights.
    */
-  private rights: Array<R>;
+  private rights: R[];
 
   /**
    * Function that is called when action is not authorized within `authorize`
@@ -54,10 +54,9 @@ export class Canallo<R extends AnyRight = never> {
    * Creates a new instance of `Canallo` with specified rights array.
    */
   public constructor(
-    rights: Array<R> = [],
     onNotAuthorized: OnNotAuthorized = defaultOnNotAuthorized
   ) {
-    this.rights = rights;
+    this.rights = [];
     this.onNotAuthorized = onNotAuthorized;
   }
 
@@ -65,23 +64,22 @@ export class Canallo<R extends AnyRight = never> {
    * Defines a right that instance of type `A` is allowed to perform an action
    * named `N` on target of type `T` only if optional condition is met.
    */
-  public allow = <A extends object, N extends string, T extends object>(
+  public allow<A extends object, N extends string, T extends object>(
+    this: Canallo<R | Right<A, N, T>>,
     actorClass: Class<A>,
     action: N,
     targetClass: Class<T>,
     condition?: Condition<A, T>
-  ) => {
-    const rights: Array<R | Right<A, N, T>> = this.rights;
-
-    rights.push({
+  ) {
+    this.rights.push({
       actorClass,
       action,
       targetClass,
       condition
     });
 
-    return new Canallo(rights, this.onNotAuthorized);
-  };
+    return this;
+  }
 
   /**
    * Returns whether specified `actor` is allowed to perform an action named
